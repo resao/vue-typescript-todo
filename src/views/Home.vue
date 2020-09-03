@@ -14,7 +14,10 @@
         Add
       </button>
     </div>
-    <List :todos="todos" />
+    <List
+      :todos="todos"
+      @remove="remove"
+    />
   </div>
 </template>
 
@@ -30,7 +33,7 @@ import List from '@/components/todo/list/index.vue'
 })
 
 export default class Home extends Vue {
-  public add (): void {
+  private add (): void {
     const todo = {
       text: this.todo
     } as Todo
@@ -38,6 +41,10 @@ export default class Home extends Vue {
     this.todos.push(todo)
 
     this.todo = ''
+  }
+
+  private remove (todo: Todo): void {
+    this.todos = this.todos.filter((todoItem) => todoItem !== todo)
   }
 
   private todo = ''
