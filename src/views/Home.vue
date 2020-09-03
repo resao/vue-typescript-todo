@@ -6,11 +6,11 @@
     >
     <div>
       <input
-        v-model="todo"
+        v-model="todoText"
         type="text"
-        @keyup.enter="add"
+        @keyup.enter="addItem"
       >
-      <button @click="add">
+      <button @click="addItem">
         Add
       </button>
     </div>
@@ -23,8 +23,11 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
+import { namespace } from 'vuex-class'
 import { Todo } from '@/types'
 import List from '@/components/todo/list/index.vue'
+
+const todo = namespace('todos')
 
 @Component({
   components: {
@@ -33,26 +36,21 @@ import List from '@/components/todo/list/index.vue'
 })
 
 export default class Home extends Vue {
-  private add (): void {
-    const todo = {
-      text: this.todo
-    } as Todo
+  @todo.State
+  private todos!: Array<Todo>
 
-    this.todos.push(todo)
+  @todo.Action
+  private add!: (text: string) => void
 
-    this.todo = ''
+  @todo.Action
+  private remove!: (todo: Todo) => void
+
+  private addItem (): void {
+    this.add(this.todoText)
+
+    this.todoText = '' // Reset the text field
   }
 
-  private remove (todo: Todo): void {
-    this.todos = this.todos.filter((todoItem) => todoItem !== todo)
-  }
-
-  private todo = ''
-
-  private todos: Array<Todo> = [{
-    text: 'Dishes'
-  }, {
-    text: 'Washing'
-  }]
+  private todoText = ''
 }
 </script>
